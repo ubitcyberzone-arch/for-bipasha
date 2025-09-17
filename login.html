@@ -3,38 +3,168 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>Secure Login</title>
+<title>Pro Login</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
-body{height:100vh;background:linear-gradient(135deg,#4f46e5,#06b6d4);
-     display:flex;justify-content:center;align-items:center}
-.card{width:350px;padding:30px;background:#fff;border-radius:12px;
-      box-shadow:0 5px 20px rgba(0,0,0,0.2)}
-h2{text-align:center;margin-bottom:20px;color:#333}
-.inputBox{margin:15px 0}
-.inputBox input{width:100%;padding:12px;border:1px solid #ccc;
-                border-radius:8px;font-size:1rem}
-button{width:100%;padding:12px;border:none;border-radius:8px;
-       background:#06b6d4;color:#fff;font-weight:bold;font-size:1rem;
-       cursor:pointer;transition:.3s}
-button:hover{background:#0891b2}
-.message{text-align:center;margin-top:10px;color:red}
+/* Basic styles for the entire page */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #1a1a2e; /* Fallback color */
+    color: #fff;
+    overflow: hidden; /* Prevent scrollbars from Vanta.js */
+}
+
+/* Vanta.js background container */
+#vanta-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+/* Professional Card Styling */
+.card {
+    width: 380px;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition: transform 0.5s ease-in-out;
+    transform: perspective(1000px) rotateY(0deg);
+}
+
+/* 3D hover effect for the card */
+.card:hover {
+    transform: perspective(1000px) rotateY(10deg);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.inputBox {
+    position: relative;
+    margin: 25px 0;
+}
+
+.inputBox input {
+    width: 100%;
+    padding: 12px 10px 12px 40px;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+    outline: none;
+    color: #fff;
+    font-size: 1rem;
+    transition: border-bottom 0.3s ease;
+}
+
+/* Input focus effect */
+.inputBox input:focus {
+    border-bottom: 2px solid #06b6d4;
+}
+
+.inputBox input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.inputBox i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.7);
+    transition: color 0.3s ease;
+}
+
+.inputBox input:focus + i {
+    color: #06b6d4;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(90deg, #06b6d4, #4f46e5);
+    color: #fff;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.message {
+    text-align: center;
+    margin-top: 10px;
+    color: #ff6347; /* Tomato */
+    font-size: 0.9rem;
+}
 </style>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 </head>
-<body>
+<body id="vanta-bg">
+
 <div class="card">
-  <form method="POST" action="/login">
-    <h2>Login</h2>
-    <div class="inputBox"><input type="text" name="username" placeholder="Username" required /></div>
-    <div class="inputBox"><input type="password" name="password" placeholder="Password" required /></div>
-    <button type="submit">Sign In</button>
-    <div class="message">
-      <script>
-        if (new URLSearchParams(window.location.search).get("error"))
-          document.write("Invalid Credentials!");
-      </script>
-    </div>
-  </form>
+    <form method="POST" action="/login">
+        <h2>Welcome Back</h2>
+        <div class="inputBox">
+            <input type="text" name="username" placeholder="Username" required />
+            <i class="fas fa-user"></i>
+        </div>
+        <div class="inputBox">
+            <input type="password" name="password" placeholder="Password" required />
+            <i class="fas fa-lock"></i>
+        </div>
+        <button type="submit">Sign In</button>
+        <div class="message">
+            <script>
+                if (new URLSearchParams(window.location.search).get("error"))
+                    document.write("Invalid Credentials!");
+            </script>
+        </div>
+    </form>
 </div>
+
+<script>
+VANTA.NET({
+  el: "#vanta-bg",
+  mouseControls: true,
+  touchControls: true,
+  gyroControls: false,
+  minHeight: 200.00,
+  minWidth: 200.00,
+  scale: 1.00,
+  scaleMobile: 1.00,
+  color: 0x4f46e5,
+  backgroundColor: 0x1a1a2e
+});
+</script>
 </body>
 </html>
