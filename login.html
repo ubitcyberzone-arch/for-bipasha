@@ -1,63 +1,24 @@
-<!DOCTYPE html><html lang="en"><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Secure 3D Login</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
-body{height:100vh;background:linear-gradient(135deg,#4f46e5,#06b6d4);display:flex;justify-content:center;align-items:center;overflow:hidden}
-.scene{perspective:1000px}
-.card{width:350px;height:450px;background:rgba(255,255,255,0.1);border-radius:20px;backdrop-filter:blur(10px);
-box-shadow:0 15px 35px rgba(0,0,0,0.2);transition:transform .8s cubic-bezier(.4,.2,.2,1);transform-style:preserve-3d;
-padding:40px;position:relative}
-.scene:hover .card,.card:focus-within{transform:rotateY(15deg) rotateX(10deg)}
-.circle{position:absolute;border-radius:50%;background:rgba(255,255,255,0.2);backdrop-filter:blur(5px);
-animation:float 6s ease-in-out infinite}
-.circle:nth-child(1){width:120px;height:120px;top:-40px;left:-40px}
-.circle:nth-child(2){width:80px;height:80px;bottom:-30px;right:-30px;animation-delay:3s}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
-h2{text-align:center;color:#fff;margin-bottom:30px;font-size:2rem}
-.inputBox{position:relative;margin:20px 0}
-.inputBox input{width:100%;padding:15px;border:none;border-radius:10px;background:rgba(255,255,255,0.2);
-color:#fff;font-size:1rem;outline:none;transition:background .3s}
-.inputBox input::placeholder{color:#e0e0e0}
-.inputBox input:focus{background:rgba(255,255,255,0.3)}
-button{width:100%;padding:15px;border:none;border-radius:10px;background:#06b6d4;color:#fff;
-font-weight:bold;font-size:1rem;cursor:pointer;transition:.3s;margin-top:10px}
-button:hover{background:#0891b2}
-.message{text-align:center;color:#fff;margin-top:15px;font-weight:bold}
-</style></head>
+<link rel="stylesheet" href="style.css">
+</head>
 <body>
 <div class="scene">
-<div class="card">
-<div class="circle"></div><div class="circle"></div>
-<form id="f">
-<h2>Login</h2>
-<div class="inputBox"><input id="u" type="text" placeholder="Username" required></div>
-<div class="inputBox"><input id="p" type="password" placeholder="Password" required></div>
-<button type="submit">Sign In</button>
-<div id="m" class="message"></div>
-</form>
+  <div class="card">
+    <div class="circle"></div><div class="circle"></div>
+    <form id="f" method="POST" action="/login">
+      <h2>Login</h2>
+      <div class="inputBox"><input name="username" type="text" placeholder="Username" required></div>
+      <div class="inputBox"><input name="password" type="password" placeholder="Password" required></div>
+      <button type="submit">Sign In</button>
+      <div id="m" class="message"></div>
+    </form>
+  </div>
 </div>
-</div>
-
-<script>
-/* ----- Obfuscated JS (for casual protection only) ----- */
-(function(){
-    function _(s){return s.split('').reverse().join('');}
-    const a=_('resU'),b=_('0002');
-    document.getElementById('f').addEventListener('submit',function(e){
-        e.preventDefault();
-        let u=document.getElementById('u').value.trim(),
-            p=document.getElementById('p').value.trim(),
-            m=document.getElementById('m');
-        if(u.toLowerCase()===a.toLowerCase() && p===b){
-            m.textContent="Login Successful!";m.style.color="#0f0";
-            setTimeout(function(){
-                window.location.href="ALL%20SER.html";
-            },1000);
-        } else {
-            m.textContent="Invalid Credentials!";m.style.color="#ff0";
-        }
-    });
-})();
-</script>
-</body></html>
+<script src="script.js"></script>
+</body>
+</html>
