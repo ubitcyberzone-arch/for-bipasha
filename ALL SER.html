@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>India Services Portal</title>
+<style>
+    :root {
+        --primary-color: #0056b3;
+        --primary-dark: #003d80;
+        --background-light: #f4f6f9;
+        --background-card: #fff;
+        --text-dark: #333;
+        --shadow-light: rgba(0,0,0,0.1);
+        --shadow-medium: rgba(0,0,0,0.2);
+    }
+
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: var(--background-light);
+        color: var(--text-dark);
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    header {
+        background: var(--primary-color);
+        color: #fff;
+        text-align: center;
+        padding: 1.25rem 0;
+        box-shadow: 0 2px 6px var(--shadow-medium);
+    }
+    header h1 {
+        margin: 0;
+        font-size: 2rem;
+    }
+
+    nav {
+        background: var(--background-card);
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding: 0.625rem 1.25rem;
+        box-shadow: 0 1px 4px var(--shadow-light);
+    }
+
+    .btn {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background-color 0.2s;
+    }
+    .btn:hover {
+        background: var(--primary-dark);
+    }
+
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1.25rem;
+        padding: 1.875rem;
+    }
+
+    .service-card {
+        background: var(--background-card);
+        border-radius: 8px;
+        padding: 1.25rem;
+        text-align: center;
+        box-shadow: 0 2px 6px var(--shadow-light);
+        transition: transform 0.2s;
+    }
+    .service-card:hover {
+        transform: translateY(-4px);
+    }
+    .service-card a {
+        text-decoration: none;
+        color: var(--primary-color);
+        font-weight: bold;
+        display: block;
+        padding: 0.5rem 0;
+    }
+
+    /* Highlight card while dragging */
+    .service-card.dragging {
+        opacity: 0.5;
+        border: 2px dashed var(--primary-color);
+    }
+
+    .admin-panel {
+        display: none;
+        max-width: 600px;
+        margin: 1.875rem auto;
+        background: var(--background-card);
+        padding: 1.25rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px var(--shadow-light);
+    }
+    .admin-panel h2 {
+        margin-top: 0;
+        color: var(--primary-color);
+    }
+    .form-group {
+        margin-top: 1rem;
+    }
+    label {
+        display: block;
+        margin-bottom: 0.3rem;
+        font-weight: bold;
+    }
+    input[type="text"], select {
+        width: 100%;
+        padding: 0.5rem;
+        margin-top: 0.3rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+    .admin-actions {
+        margin-top: 1.25rem;
+        display: flex;
+        gap: 0.625rem;
+        flex-wrap: wrap;
+    }
+
+    footer {
+        text-align: center;
+        padding: 1.25rem;
+        background: #eee;
+        margin-top: 2.5rem;
+    }
+</style>
+</head>
+<body>
+<header>
+    <div class="container">
+        <h1>India Services Portal</h1>
+    </div>
+</header>
+
+<nav>
+    <button id="adminToggleBtn" class="btn">Admin Panel</button>
+    <button id="rearrangeToggleBtn" class="btn">Rearrange</button>
+</nav>
+
+<main>
+    <section id="services-section">
+        <div class="container">
+            <div class="services-grid" id="services-container"></div>
+        </div>
+    </section>
+
+    <section id="admin-panel" class="admin-panel">
+        <div class="container">
+            <h2>Manage Services</h2>
+
+            <div class="form-group">
+                <label for="newServiceName">Add New Service:</label>
+                <input type="text" id="newServiceName" placeholder="Service Name">
+                <input type="text" id="newServiceLink" placeholder="Service Link (URL)">
+                <button class="btn" id="addServiceBtn">Add Service</button>
+            </div>
+
+            <div class="form-group">
+                <label for="editDropdown" style="margin-top: 2rem;">Edit Existing Service:</label>
+                <select id="editDropdown">
+                    <option value="">-- Select a service --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="editServiceName">Edit Name:</label>
+                <input type="text" id="editServiceName" placeholder="Edit Name">
+            </div>
+            <div class="form-group">
+                <label for="editServiceLink">Edit Link (URL):</label>
+                <input type="text" id="editServiceLink" placeholder="Edit Link (URL)">
+            </div>
+
+            <div class="admin-actions">
+                <button class="btn" id="saveChangesBtn">Save Changes</button>
+                <button class="btn" id="deleteServiceBtn">Delete Service</button>
+                <button class="btn" id="backToPortalBtn">Back to Portal</button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2025 India Services Portal by Udit Rana Das </p>
+    </div>
+</footer>
+
+<script>
+let portalServices = [
+    { name: "Ration Card (West Bengal)", link: "https://food.wb.gov.in/" },
+    { name: "Banglar Bhumi", link: "https://banglarbhumi.gov.in/" },
+    { name: "MSME Registration", link: "https://udyamregistration.gov.in/" },
+    { name: "Trade License", link: "https://www.kmcgov.in/" },
+    { name: "Shilpasathi", link: "https://silpasathi.wb.gov.in/" },
+    { name: "PAN Card", link: "https://www.incometax.gov.in/iec/foportal/" },
+    { name: "Aadhar", link: "https://uidai.gov.in/" },
+    { name: "Voter Services", link: "https://www.nvsp.in/" }
+];
+
+const servicesContainer = document.getElementById('services-container');
+const adminPanel = document.getElementById('admin-panel');
+const adminToggleBtn = document.getElementById('adminToggleBtn');
+const backToPortalBtn = document.getElementById('backToPortalBtn');
+const newServiceNameInput = document.getElementById('newServiceName');
+const newServiceLinkInput = document.getElementById('newServiceLink');
+const addServiceBtn = document.getElementById('addServiceBtn');
+const editDropdown = document.getElementById('editDropdown');
+const editServiceNameInput = document.getElementById('editServiceName');
+const editServiceLinkInput = document.getElementById('editServiceLink');
+const saveChangesBtn = document.getElementById('saveChangesBtn');
+const deleteServiceBtn = document.getElementById('deleteServiceBtn');
+const rearrangeToggleBtn = document.getElementById('rearrangeToggleBtn');
+
+let rearrangeMode = false;
+
+const storedServices = localStorage.getItem('services');
+if (storedServices) {
+    portalServices = JSON.parse(storedServices);
+}
+renderServices();
+
+function saveServicesToLocalStorage() {
+    localStorage.setItem('services', JSON.stringify(portalServices));
+}
+
+function renderServices() {
+    servicesContainer.innerHTML = '';
+    portalServices.forEach((service, index) => {
+        const serviceCard = document.createElement('div');
+        serviceCard.className = 'service-card';
+        serviceCard.draggable = true;
+        serviceCard.dataset.index = index;
+        serviceCard.innerHTML = `<a href="${service.link}" target="_blank">${service.name}</a>`;
+        servicesContainer.appendChild(serviceCard);
+    });
+    populateDropdown();
+    saveServicesToLocalStorage();
+}
+
+function toggleAdminPanel() {
+    adminPanel.style.display = adminPanel.style.display === 'block' ? 'none' : 'block';
+    if (adminPanel.style.display === 'block') {
+        populateDropdown();
+    }
+}
+
+function addService() {
+    const name = newServiceNameInput.value.trim();
+    const link = newServiceLinkInput.value.trim();
+    if (!name || !link) {
+        alert('Please enter both a name and a link.');
+        return;
+    }
+    portalServices.push({ name, link });
+    newServiceNameInput.value = '';
+    newServiceLinkInput.value = '';
+    renderServices();
+    alert('Service added successfully!');
+}
+
+function populateDropdown() {
+    editDropdown.innerHTML = '<option value="">-- Select a service --</option>';
+    portalServices.forEach((service, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = service.name;
+        editDropdown.appendChild(option);
+    });
+}
+
+function loadSelectedService() {
+    const index = editDropdown.value;
+    if (index === '') {
+        editServiceNameInput.value = '';
+        editServiceLinkInput.value = '';
+        return;
+    }
+    editServiceNameInput.value = portalServices[index].name;
+    editServiceLinkInput.value = portalServices[index].link;
+}
+
+function saveEditedService() {
+    const index = editDropdown.value;
+    if (index === '') {
+        alert('Please select a service to edit.');
+        return;
+    }
+    const name = editServiceNameInput.value.trim();
+    const link = editServiceLinkInput.value.trim();
+    if (!name || !link) {
+        alert('Please enter both a name and a link.');
+        return;
+    }
+    portalServices[index] = { name, link };
+    renderServices();
+    alert('Service updated successfully!');
+}
+
+function deleteSelectedService() {
+    const index = editDropdown.value;
+    if (index === '') {
+        alert('Please select a service to delete.');
+        return;
+    }
+    if (confirm('Are you sure you want to delete this service?')) {
+        portalServices.splice(index, 1);
+        renderServices();
+        editServiceNameInput.value = '';
+        editServiceLinkInput.value = '';
+        alert('Service deleted successfully!');
+    }
+}
+
+// --- Drag & Drop Sorting ---
+rearrangeToggleBtn.addEventListener('click', () => {
+    rearrangeMode = !rearrangeMode;
+    rearrangeToggleBtn.textContent = rearrangeMode ? 'Save Order' : 'Rearrange';
+    if (!rearrangeMode) saveOrder();
+});
+
+function saveOrder() {
+    const newOrder = [];
+    servicesContainer.querySelectorAll('.service-card').forEach(card => {
+        const idx = card.dataset.index;
+        newOrder.push(portalServices[idx]);
+    });
+    portalServices = newOrder;
+    saveServicesToLocalStorage();
+    renderServices();
+}
+
+servicesContainer.addEventListener('dragstart', e => {
+    if (!rearrangeMode) return;
+    const card = e.target.closest('.service-card');
+    card.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+});
+servicesContainer.addEventListener('dragend', e => {
+    if (!rearrangeMode) return;
+    e.target.closest('.service-card').classList.remove('dragging');
+});
+servicesContainer.addEventListener('dragover', e => {
+    if (!rearrangeMode) return;
+    e.preventDefault();
+    const afterElement = getDragAfterElement(servicesContainer, e.clientY);
+    const dragging = document.querySelector('.dragging');
+    if (!dragging) return;
+    if (afterElement == null) {
+        servicesContainer.appendChild(dragging);
+    } else {
+        servicesContainer.insertBefore(dragging, afterElement);
+    }
+});
+
+function getDragAfterElement(container, y) {
+    const elements = [...container.querySelectorAll('.service-card:not(.dragging)')];
+    return elements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child };
+        } else {
+            return closest;
+        }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+// --- Event Listeners ---
+adminToggleBtn.addEventListener('click', toggleAdminPanel);
+backToPortalBtn.addEventListener('click', toggleAdminPanel);
+addServiceBtn.addEventListener('click', addService);
+editDropdown.addEventListener('change', loadSelectedService);
+saveChangesBtn.addEventListener('click', saveEditedService);
+deleteServiceBtn.addEventListener('click', deleteSelectedService);
+</script>
+</body>
+</html>
